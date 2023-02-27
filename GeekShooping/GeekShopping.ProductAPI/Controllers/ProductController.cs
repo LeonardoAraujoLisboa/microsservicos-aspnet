@@ -1,5 +1,7 @@
 ﻿using GeekShopping.ProductAPI.Data.ValueObject;
 using GeekShopping.ProductAPI.Repository;
+using GeekShopping.ProductAPI.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,7 @@ namespace GeekShopping.ProductAPI.Controllers
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(long id)
         {
@@ -28,6 +31,7 @@ namespace GeekShopping.ProductAPI.Controllers
             return Ok(product);
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductVO>>> GetProducts()
         {
@@ -35,6 +39,7 @@ namespace GeekShopping.ProductAPI.Controllers
             return Ok(products);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] ProductVO productVO)
         {
@@ -46,6 +51,7 @@ namespace GeekShopping.ProductAPI.Controllers
             return Ok(product);
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<ActionResult> Update([FromBody] ProductVO productVO)
         {
@@ -56,6 +62,8 @@ namespace GeekShopping.ProductAPI.Controllers
             var product = await _repository.Update(productVO);
             return Ok(product);
         }
+
+        [Authorize(Roles = Role.Admin)]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteById(long id)
         {
