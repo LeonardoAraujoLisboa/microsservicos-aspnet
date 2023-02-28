@@ -19,8 +19,8 @@ namespace GeekShopping.ProductAPI.Controllers
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        [Authorize]
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult> GetById(long id)
         {
             var product = await _repository.GetById(id);
@@ -31,7 +31,6 @@ namespace GeekShopping.ProductAPI.Controllers
             return Ok(product);
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductVO>>> GetProducts()
         {
@@ -39,8 +38,8 @@ namespace GeekShopping.ProductAPI.Controllers
             return Ok(products);
         }
 
-        [Authorize]
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult> Create([FromBody] ProductVO productVO)
         {
             if (productVO == null)
@@ -51,8 +50,8 @@ namespace GeekShopping.ProductAPI.Controllers
             return Ok(product);
         }
 
-        [Authorize]
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult> Update([FromBody] ProductVO productVO)
         {
             if (productVO == null)
@@ -63,8 +62,8 @@ namespace GeekShopping.ProductAPI.Controllers
             return Ok(product);
         }
 
-        [Authorize(Roles = Role.Admin)]
         [HttpDelete("{id}")]
+        [Authorize(Roles = Role.Admin)]//delete so é permitido pra admin
         public async Task<ActionResult> DeleteById(long id)
         {
             var status = await _repository.DeleteById(id);

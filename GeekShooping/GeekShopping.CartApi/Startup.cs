@@ -1,23 +1,11 @@
 using AutoMapper;
-using GeekShopping.ProductAPI.Config;
-using GeekShopping.ProductAPI.Model.Context;
-using GeekShopping.ProductAPI.Repository;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+using GeekShopping.CartApi.Config;
+using GeekShopping.CartApi.Model.Context;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace GeekShopping.ProductAPI
+namespace GeekShopping.CartAPI
 {
     public class Startup
     {
@@ -31,7 +19,7 @@ namespace GeekShopping.ProductAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connection = Configuration["MySQlConnection:MySQlConnectionString"]; //adicionei a configuração. Essa string de conversão voce coloca no appsttings.json
+            var connection = Configuration["MySQlConnection:MySQlConnectionString"];
 
             services.AddDbContext<MySQLContext>(options => options.
                 UseMySql(connection,
@@ -42,19 +30,19 @@ namespace GeekShopping.ProductAPI
             services.AddSingleton(mapper);
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            //repositório do produto, dos métodos
-            services.AddScoped<IProductRepository, ProductRepository>();
+            //services.AddScoped<ICartRepository, CartRepository>();
 
             services.AddControllers();
 
-            services.AddAuthentication("Bearer").AddJwtBearer("Bearer", options =>
-            {
-                options.Authority = "http://localhost:4436/";
-                options.TokenValidationParameters = new TokenValidationParameters
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
                 {
-                    ValidateAudience = false
-                };
-            });
+                    options.Authority = "http://localhost:4436/";
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                });
 
             services.AddAuthorization(options =>
             {
@@ -67,7 +55,7 @@ namespace GeekShopping.ProductAPI
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.ProductAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "GeekShopping.CartAPI", Version = "v1" });
                 c.EnableAnnotations();
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -77,8 +65,8 @@ namespace GeekShopping.ProductAPI
                     Type = SecuritySchemeType.ApiKey,
                     Scheme = "Bearer"
                 });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement 
-                {
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
                     {
                         new OpenApiSecurityScheme
                         {
@@ -89,9 +77,9 @@ namespace GeekShopping.ProductAPI
                             },
                             Scheme = "oauth2",
                             Name = "Bearer",
-                            In = ParameterLocation.Header
+                            In= ParameterLocation.Header
                         },
-                        new List<string>()
+                        new List<string> ()
                     }
                 });
             });
@@ -104,13 +92,14 @@ namespace GeekShopping.ProductAPI
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GeekShopping.ProductAPI v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GeekShopping.CartAPI v1"));
             }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
+            //esse tem q ficar localizado ai mesmo
             app.UseAuthentication();
 
             app.UseAuthorization();
