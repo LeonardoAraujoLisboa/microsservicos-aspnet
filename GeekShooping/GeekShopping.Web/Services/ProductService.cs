@@ -20,27 +20,27 @@ namespace GeekShopping.Web.Services
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async Task<IEnumerable<ProductModel>> GetAllProducts(string token)
+        public async Task<IEnumerable<ProductViewModel>> GetAllProducts(string token)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.GetAsync(BasePath);
-            return await response.ReadContentAs<List<ProductModel>>();
+            return await response.ReadContentAs<List<ProductViewModel>>();
         }
 
-        public async Task<ProductModel> GetProductById(long id, string token)
+        public async Task<ProductViewModel> GetProductById(long id, string token)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.GetAsync($"{BasePath}/{id}");
-            return await response.ReadContentAs<ProductModel>();
+            return await response.ReadContentAs<ProductViewModel>();
         }
 
-        public async Task<ProductModel> CreateProduct(ProductModel model, string token)
+        public async Task<ProductViewModel> CreateProduct(ProductViewModel model, string token)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.PostAsJson(BasePath, model);
             if (response.IsSuccessStatusCode)
             {
-                return await response.ReadContentAs<ProductModel>();
+                return await response.ReadContentAs<ProductViewModel>();
             }
             else
             {
@@ -48,13 +48,13 @@ namespace GeekShopping.Web.Services
             }
         }
 
-        public async Task<ProductModel> UpdateProduct(ProductModel model, string token)
+        public async Task<ProductViewModel> UpdateProduct(ProductViewModel model, string token)
         {
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.PutAsJson(BasePath, model);
             if (response.IsSuccessStatusCode)
             {
-                return await response.ReadContentAs<ProductModel>();
+                return await response.ReadContentAs<ProductViewModel>();
             }
             else
             {

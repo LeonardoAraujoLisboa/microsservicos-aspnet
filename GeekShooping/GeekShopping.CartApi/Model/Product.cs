@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace GeekShopping.CartApi.Model
+namespace GeekShopping.CartAPI.Model
 {
     [Table("product")]
     public class Product
@@ -17,9 +17,9 @@ namespace GeekShopping.CartApi.Model
 
         [Column("price")]
         [Required]
-        [Range(1, 10000)]
-
+        [Range(1,10000)]
         public decimal Price { get; set; }
+
         [Column("description")]
         [StringLength(500)]
         public string Description { get; set; }
@@ -30,6 +30,6 @@ namespace GeekShopping.CartApi.Model
 
         [Column("image_url")]
         [StringLength(300)]
-        public string ImageUrl { get; set; }
+        public string ImageURL { get; set; }
     }
 }

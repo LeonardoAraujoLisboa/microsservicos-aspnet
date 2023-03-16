@@ -1,21 +1,18 @@
 ﻿using AutoMapper;
-using GeekShopping.CartApi.Data.ValueObjects;
-using GeekShopping.CartApi.Model;
+using GeekShopping.CartAPI.Data.ValueObjects;
+using GeekShopping.CartAPI.Model;
 
-namespace GeekShopping.CartApi.Config
+namespace GeekShopping.CartAPI.Config
 {
-    public class MappingConfig //configurando o automapper
+    public class MappingConfig
     {
         public static MapperConfiguration RegisterMaps()
         {
-            var mappingConfig = new MapperConfiguration(config =>
-            {
-                //config.CreateMap<ProductVO, Product>();
-                //config.CreateMap<Product, ProductVO>(); posso fazer assim ou do jeito de baixo agora
+            var mappingConfig = new MapperConfiguration(config => {
                 config.CreateMap<ProductVO, Product>().ReverseMap();
-                config.CreateMap<CartVO, Cart>().ReverseMap();
                 config.CreateMap<CartHeaderVO, CartHeader>().ReverseMap();
                 config.CreateMap<CartDetailVO, CartDetail>().ReverseMap();
+                config.CreateMap<CartVO, Cart>().ReverseMap();
             });
             return mappingConfig;
         }

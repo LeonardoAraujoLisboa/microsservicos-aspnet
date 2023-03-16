@@ -1,9 +1,23 @@
 using AutoMapper;
-using GeekShopping.CartApi.Config;
-using GeekShopping.CartApi.Model.Context;
+using GeekShopping.CartAPI.Config;
+using GeekShopping.CartAPI.Model.Context;
+using GeekShopping.CartAPI.RabbitMQSender;
+using GeekShopping.CartAPI.Repository;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GeekShopping.CartAPI
 {
@@ -30,14 +44,15 @@ namespace GeekShopping.CartAPI
             services.AddSingleton(mapper);
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            //services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<ICartRepository, CartRepository>();
 
+            services.AddSingleton<IRabbitMQMessageSender, RabbitMQMessageSender>();
             services.AddControllers();
 
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "http://localhost:4436/";
+                    options.Authority = "https://localhost:4435/";
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateAudience = false
@@ -98,10 +113,7 @@ namespace GeekShopping.CartAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            //esse tem q ficar localizado ai mesmo
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
